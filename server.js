@@ -6,15 +6,19 @@ const port = 3000;
 
 app.use(express.json());
 
-const alunos = [
-  { id: 1, nome: "Augusto", turma: "2TIB" },
-  { id: 2, nome: "Gustavo", turma: "2TIB" },
-  { id: 3, nome: "Rayssa", turma: "2TIB" },
-  { id: 4, nome: "Amanda", turma: "2TIB" },
-  { id: 5, nome: "Marcos", turma: "2TIB" },
-  { id: 6, nome: "Michelly", turma: "2TIB" },
-  { id: 7, nome: "Maria Fernanda", turma: "2TIB" },
-  { id: 8, nome: "Fellype", turma: "2TIB" }
+const jogos = [
+  { id: 1, nome: "GTA IV", Ano: "2008" },
+  { id: 2, nome: "Battlefield 1", Ano: "2016" },
+  { id: 3, nome: "Watch Dogs", Ano: "2014" },
+  { id: 4, nome: "Cuphead", Ano: "2017" },
+  { id: 5, nome: "The Last of Us", Ano: "2013" },
+  { id: 6, nome: "Assassin's Creed Black Flag", Ano: "2013" },
+  { id: 7, nome: "Counter-Strike 2", Ano: "2023" },
+  { id: 8, nome: "Stardew Valley", Ano: "2016" },
+  { id: 9, nome: "Hollow knight", Ano: "2017" },
+  { id: 10, nome: "Batman arkham city", Ano: "2011" },
+  { id: 11, nome: "Dying light", Ano: "2015" },
+  { id: 12, nome: "Uncharted 4", Ano: "2016" }
 ];
 
 function autenticar(req, res, next) {
@@ -38,77 +42,82 @@ app.get("/", (req, res) => {
   });
 });
 
-app.get("/alunos", autenticar, (req, res) => {
-  res.json(alunos);
+app.get("/jogos",(req, res) => {
+  res.json(jogos);
 });
 
-app.get("/alunos/:id", (req, res) => {
+app.get("/jogos/:id", (req, res) => {
   const id = Number(req.params.id);
 
-  const aluno = alunos.find((aluno) => aluno.id === id);
+  const jogo = jogos.find((jogo) => jogo.id === id);
 
-  if (!aluno) {
+  if (!jogo) {
     return res.status(404).json({
-      message: "Aluno não encontrado"
+      message: "Jogo não encontrado"
     });
   }
 
-  res.json(aluno);
+  res.json(jogo);
 });
 
-app.post("/alunos", autenticar, (req, res) => {
-  const novoAluno = {
-    id: alunos.length + 1,
+app.post("/jogos",(req, res) => {
+  const novoJogo = {
+    id: jogos.length + 1,
     nome: req.body.nome,
-    turma: req.body.turma
+    categoria: req.body.categoria,
+    Ano: req.body.Ano
   };
 
-  alunos.push(novoAluno);
+  jogos.push(novoJogo);
 
   res.status(201).json({
-    mensagem: "Aluno cadastrado com sucesso",
-    aluno: novoAluno
+    mensagem: "Jogo cadastrado com sucesso",
+    jogo: novoJogo
   });
 });
 
-app.patch("/alunos/:id", autenticar, (req, res) => {
+app.put("/jogos/:id",(req, res) => {
   const id = Number(req.params.id);
-  const { nome, turma } = req.body;
+  const { nome, categoria, Ano } = req.body;
 
-  const aluno = alunos.find((aluno) => aluno.id === id);
+  const jogo = jogos.find((jogo) => jogo.id === id);
 
-  if (!aluno) {
+  if (!jogo) {
     return res.status(404).json({
-      message: "Aluno não encontrado"
+      message: "Jogo não encontrado"
     });
   }
 
   if (nome) {
-    aluno.nome = nome;
+    jogo.nome = nome;
   }
 
-  if (turma) {
-    aluno.turma = turma;
+  if (categoria) {
+    jogo.categoria = categoria;
   }
 
-  res.json(aluno);
+  if (Ano) {
+    jogo.Ano = Ano;
+  }
+
+  res.json(jogo);
 });
 
-app.delete("/alunos/:id", autenticar, (req, res) => {
+app.delete("/jogos/:id",(req, res) => {
   const id = Number(req.params.id);
 
-  const alunoIndex = alunos.findIndex((aluno) => aluno.id === id);
+  const jogoIndex = jogos.findIndex((jogo) => jogo.id === id);
 
-  if (alunoIndex === -1) {
+  if (jogoIndex === -1) {
     return res.status(404).json({
-      message: "Aluno não encontrado"
+      message: "Jogo não encontrado"
     });
   }
 
-  alunos.splice(alunoIndex, 1);
+  jogos.splice(jogoIndex, 1);
 
   res.json({
-    message: "Aluno removido com sucesso"
+    message: "Jogo removido com sucesso"
   });
 });
 
