@@ -1,0 +1,168 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: AV1web3bim
+meta:
+  id: wrk_5d2524e1259a477ca703d529ec2543c6
+  created: 1789245679846
+  modified: 1789245803478
+  description: ""
+collection:
+  - url: http://localhost:3000/
+    name: Get
+    meta:
+      id: req_f4093b58c7994737bf6ecc8346b5fa9c
+      created: 1789245679882
+      modified: 1789247764171
+      isPrivate: false
+      description: ""
+      sortKey: -1789245679882
+    method: GET
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3000/Jogos
+    name: Get Jogos
+    meta:
+      id: req_461063ab5d4147c4ba8e2be303f16d53
+      created: 1789245846000
+      modified: 1789247762414
+      isPrivate: false
+      description: ""
+      sortKey: -1789245846000
+    method: GET
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3000/Jogos
+    name: POST
+    meta:
+      id: req_7b8d25adfd6b4013bb739f19d99a8ca4
+      created: 1789246506518
+      modified: 1789247817586
+      isPrivate: false
+      description: ""
+      sortKey: -1789246506518
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "nome": "",
+          "Ano": ""
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3000/Jogos/11
+    name: GET JOGOS ID
+    meta:
+      id: req_662d9644aba14964afe45715e06b7ea8
+      created: 1789246631849
+      modified: 1789247718348
+      isPrivate: false
+      description: ""
+      sortKey: -1789246631849
+    method: GET
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3000/Jogos/6
+    name: PUT
+    meta:
+      id: req_7ffcf17d307342b9aebc355cf0591537
+      created: 1789246848720
+      modified: 1789247830086
+      isPrivate: false
+      description: ""
+      sortKey: -1789246848720
+    method: PUT
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "nome": "",
+          "Ano": ""
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3000/Jogos/11
+    name: DELETE
+    meta:
+      id: req_14a6bbd416cf4bcf83922ffb22ec626b
+      created: 1789246939627
+      modified: 1789247742912
+      isPrivate: false
+      description: ""
+      sortKey: -1789246939627
+    method: DELETE
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: ""
+    name: New Request
+    meta:
+      id: req_8236c5b532a24e06819b458f1ae6e40d
+      created: 1789253122678
+      modified: 1789253125901
+      isPrivate: false
+      description: ""
+      sortKey: -1789253122678
+    method: GET
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_3c47a56eb2789f6b610201c7390442a0fa847847
+    created: 1789245679848
+    modified: 1789245679848
+environments:
+  name: Base Environment
+  meta:
+    id: env_3c47a56eb2789f6b610201c7390442a0fa847847
+    created: 1789245679847
+    modified: 1789245679847
+    isPrivate: false
