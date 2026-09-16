@@ -1,6 +1,7 @@
 import express from "express";
 import "dotenv/config";
 import swaggerJSDoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express";
 
 const app = express();
 const port = 3000;
@@ -10,12 +11,12 @@ const swaggerOptions = {
     info: {
       title: "Jogos API",
       version: "1.0.0",
-      description: "INSIRA DESCRIÇÃO DO PROJETO"
+      description: "api para cadastro de jogos",
     },
     servers: [
       {
         url: "http://localhost:3000",
-        description: "DESCRIÇÃO DO SERVIDOR"
+        description: "Servidor local"
       }
     ],
     components: {
@@ -23,7 +24,7 @@ const swaggerOptions = {
         bearerAuth: {
           type: "http",
           scheme: "bearer",
-          description: "Informe o token no formato: Bearer SEU_TOKEN"
+          description: "1234"
         }
       }
     }
@@ -34,6 +35,10 @@ const swaggerOptions = {
 const swaggerSpec = swaggerJSDoc(swaggerOptions);
 
 app.use(express.json());
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+
 
 const jogos = [
   { id: 1, nome: "GTA IV", Ano: "2008" },
@@ -85,7 +90,7 @@ function autenticar(req, res, next) {
  *         - Ano
  */
 
-app.get("/", (req, res) => {
+app.get("/", autenticar, (req, res) => {
   res.json({
     mensagem: "Servidor Express funcionando!",
     disciplina: "Desenvolvimento de Websites",
