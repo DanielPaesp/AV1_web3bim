@@ -32,6 +32,8 @@ const swaggerOptions = {
   apis: ["./server.js"]
 };
 
+const TOKEN_SECRETO = process.env.TOKEN_SECRETO || "1234";
+
 const swaggerSpec = swaggerJSDoc(swaggerOptions);
 
 app.use(express.json());
