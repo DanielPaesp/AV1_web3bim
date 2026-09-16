@@ -59,9 +59,8 @@ const jogos = [
 
 function autenticar(req, res, next) {
   const authHeader = req.headers.authorization;
-  const tokenSecreto = process.env.TOKEN_SECRETO;
 
-  if (authHeader !== `Bearer ${tokenSecreto}`) {
+  if (authHeader !== `Bearer ${TOKEN_SECRETO}`) {
     return res.status(401).json({
       erro: "Acesso não autorizado. Token ausente ou inválido"
     });
@@ -107,6 +106,8 @@ app.get("/", autenticar, (req, res) => {
  *     tags: [Jogos]
  *     summary: Lista todos os jogos
  *     description: Retorna todos os jogos cadastrados.
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Lista de jogos retornada com sucesso.
@@ -116,8 +117,14 @@ app.get("/", autenticar, (req, res) => {
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Jogo'
+ *       401:
+ *         description: Token ausente ou inválido.
+ *         content:
+ *           application/json:
+ *             example:
+ *               erro: Acesso não autorizado. Token ausente ou inválido
  */
-app.get("/jogos",(req, res) => {
+app.get("/jogos", autenticar, (req, res) => {
   res.json(jogos);
 });
 
@@ -128,6 +135,8 @@ app.get("/jogos",(req, res) => {
  *     tags: [Jogos]
  *     summary: Busca um jogo por ID
  *     description: Retorna um jogo usando o seu ID.
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -142,6 +151,12 @@ app.get("/jogos",(req, res) => {
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Jogo'
+ *       401:
+ *         description: Token ausente ou inválido.
+ *         content:
+ *           application/json:
+ *             example:
+ *               erro: Acesso não autorizado. Token ausente ou inválido
  *       404:
  *         description: Jogo não encontrado.
  *         content:
@@ -149,7 +164,7 @@ app.get("/jogos",(req, res) => {
  *             example:
  *               message: Jogo não encontrado
  */
-app.get("/jogos/:id", (req, res) => {
+app.get("/jogos/:id", autenticar, (req, res) => {
   const id = Number(req.params.id);
 
   const jogo = jogos.find((jogo) => jogo.id === id);
@@ -281,7 +296,7 @@ app.post("/jogos", autenticar, (req, res) => {
  *       404:
  *         description: Jogo não encontrado.
  */
-app.patch("/jogos/:id", autenticar, (req, res) => {
+app.put("/jogos/:id", autenticar, (req, res) => {
   const id = Number(req.params.id);
   const { nome, Ano } = req.body;
 
