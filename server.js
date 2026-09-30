@@ -1,61 +1,21 @@
 import express from "express";
 import "dotenv/config";
-import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
+import swaggerSpec from "./src/config/swagger";
+import { 
+  apagarJogo, 
+  buscarJogo, 
+  cadastrarJogo, 
+  editarJogo, 
+  listarJogos, 
+  novoJogo } from "./src/controller/jogosController";
 
 const app = express();
 const port = 3000;
-const swaggerOptions = {
-  definition: {
-    openapi: "3.0.0",
-    info: {
-      title: "Jogos API",
-      version: "1.0.0",
-      description: "api para cadastro de jogos",
-    },
-    servers: [
-      {
-        url: "http://localhost:3000",
-        description: "Servidor local"
-      }
-    ],
-    components: {
-      securitySchemes: {
-        bearerAuth: {
-          type: "http",
-          scheme: "bearer",
-          description: "1234"
-        }
-      }
-    }
-  },
-  apis: ["./server.js"]
-};
-
-const TOKEN_SECRETO = process.env.TOKEN_SECRETO || "1234";
-
-const swaggerSpec = swaggerJSDoc(swaggerOptions);
 
 app.use(express.json());
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
-
-
-const jogos = [
-  { id: 1, nome: "GTA IV", Ano: "2008" },
-  { id: 2, nome: "Battlefield 1", Ano: "2016" },
-  { id: 3, nome: "Watch Dogs", Ano: "2014" },
-  { id: 4, nome: "Cuphead", Ano: "2017" },
-  { id: 5, nome: "The Last of Us", Ano: "2013" },
-  { id: 6, nome: "Assassin's Creed Black Flag", Ano: "2013" },
-  { id: 7, nome: "Counter-Strike 2", Ano: "2023" },
-  { id: 8, nome: "Stardew Valley", Ano: "2016" },
-  { id: 9, nome: "Hollow knight", Ano: "2017" },
-  { id: 10, nome: "Batman arkham city", Ano: "2011" },
-  { id: 11, nome: "Dying light", Ano: "2015" },
-  { id: 12, nome: "Uncharted 4", Ano: "2016" }
-];
 
 function autenticar(req, res, next) {
   const authHeader = req.headers.authorization;
@@ -124,9 +84,7 @@ app.get("/", autenticar, (req, res) => {
  *             example:
  *               erro: Acesso não autorizado. Token ausente ou inválido
  */
-app.get("/jogos", autenticar, (req, res) => {
-  res.json(jogos);
-});
+app.get("/jogos", listarJogos);
 
 /**
  * @swagger
@@ -164,19 +122,7 @@ app.get("/jogos", autenticar, (req, res) => {
  *             example:
  *               message: Jogo não encontrado
  */
-app.get("/jogos/:id", autenticar, (req, res) => {
-  const id = Number(req.params.id);
-
-  const jogo = jogos.find((jogo) => jogo.id === id);
-
-  if (!jogo) {
-    return res.status(404).json({
-      message: "Jogo não encontrado"
-    });
-  }
-
-  res.json(jogo);
-});
+app.get("/jogos/:id", autenticar, buscarJogo);
 
 /**
  * @swagger
@@ -228,21 +174,7 @@ app.get("/jogos/:id", autenticar, (req, res) => {
  *             example:
  *               erro: Acesso não autorizado. Token ausente ou inválido
  */
-app.post("/jogos", autenticar, (req, res) => {
-  const novoJogo = {
-    id: jogos.length + 1,
-    nome: req.body.nome,
-    Ano: req.body.Ano
-  };
-
-  jogos.push(novoJogo);
-
-  res.status(201).json({
-    mensagem: "Jogo cadastrado com sucesso",
-    jogo: novoJogo
-  });
-});
-
+app.post("/jogos", autenticar, cadastrarJogo);
 /**
  * @swagger
  * /jogos/{id}:
@@ -296,28 +228,7 @@ app.post("/jogos", autenticar, (req, res) => {
  *       404:
  *         description: Jogo não encontrado.
  */
-app.put("/jogos/:id", autenticar, (req, res) => {
-  const id = Number(req.params.id);
-  const { nome, Ano } = req.body;
-
-  const jogo = jogos.find((jogo) => jogo.id === id);
-
-  if (!jogo) {
-    return res.status(404).json({
-      message: "Jogo não encontrado"
-    });
-  }
-
-  if (nome) {
-    jogo.nome = nome;
-  }
-
-  if (Ano) {
-    jogo.Ano = Ano;
-  }
-
-  res.json(jogo);
-});
+app.patch("/jogos/:id", autenticar, editarJogo);
 
 /**
  * @swagger
@@ -351,23 +262,7 @@ app.put("/jogos/:id", autenticar, (req, res) => {
  *       404:
  *         description: Jogo não encontrado.
  */
-app.delete("/jogos/:id", autenticar, (req, res) => {
-  const id = Number(req.params.id);
-
-  const jogoIndex = jogos.findIndex((jogo) => jogo.id === id);
-
-  if (jogoIndex === -1) {
-    return res.status(404).json({
-      message: "Jogo não encontrado"
-    });
-  }
-
-  jogos.splice(jogoIndex, 1);
-
-  res.json({
-    message: "Jogo removido com sucesso"
-  });
-});
+app.delete("/jogos/:id", autenticar,apagarJogo);
 
 app.listen(port, () => {
   console.log(`Servidor rodando em http://localhost:${port}`);
