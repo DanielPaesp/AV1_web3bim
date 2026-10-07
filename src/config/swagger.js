@@ -24,7 +24,7 @@ const swaggerOptions = {
       }
     }
   },
-  apis: ["./server.js"]
+  apis: ["../../server.js"]
 };
 
 const TOKEN_SECRETO = process.env.TOKEN_SECRETO || "1234";
