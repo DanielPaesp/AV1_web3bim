@@ -15,19 +15,28 @@ const swaggerOptions = {
       }
     ],
     components: {
+      schemas: {
+        Jogo: {
+          type: "object",
+          required: ["id", "nome", "Ano"],
+          properties: {
+            id: { type: "integer", example: 1 },
+            nome: { type: "string", example: "GTA IV" },
+            Ano: { type: "integer", example: 2008 }
+          }
+        }
+      },
       securitySchemes: {
         bearerAuth: {
           type: "http",
           scheme: "bearer",
-          description: "1234"
+          description: "Informe o valor de TOKEN_SECRETO como token Bearer"
         }
       }
     }
   },
-  apis: ["../../server.js"]
+  apis: ["./src/routes/jogosRoutes.js"]
 };
-
-const TOKEN_SECRETO = process.env.TOKEN_SECRETO || "1234";
 
 const swaggerSpec = swaggerJSDoc(swaggerOptions);
 

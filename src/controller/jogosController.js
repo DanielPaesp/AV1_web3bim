@@ -1,75 +1,92 @@
-import jogos from "../data/jogos";
+import { apagarJogo as removerJogo, buscarJogoPorId, criarJogo, editarJogo as atualizarJogo, listarJogos as obterJogos } from "../models/JogosModel.js";
 
-export function listarJogos(req, res) {
-    res.json(jogos);
+function validarId(id) {
+  const numero = Number(id);
+  return Number.isInteger(numero) && numero > 0 ? numero : null;
 }
 
-export function buscarJogo (req, res)  {
-  const id = Number(req.params.id);
-
-  const jogo = jogos.find((jogo) => jogo.id === id);
-
-  if (!jogo) {
-    return res.status(404).json({
-      message: "Jogo não encontrado"
-    });
+function validarJogo({ nome, Ano }, parcial = false) {
+  if (parcial && nome === undefined && Ano === undefined) {
+    return "Informe ao menos um campo para atualizar";
   }
-
-  res.json(jogo);
-};
-
-export function cadastrarJogo (req, res)  {
-  const novoJogo = {
-    id: jogos.length + 1,
-    nome: req.body.nome,
-    Ano: req.body.Ano
-  };
-
-  jogos.push(novoJogo);
-
-  res.status(201).json({
-    mensagem: "Jogo cadastrado com sucesso",
-    jogo: novoJogo
-  });
-};
-
-export function editarJogo (req, res)  {
-  const id = Number(req.params.id);
-  const { nome, Ano } = req.body;
-
-  const jogo = jogos.find((jogo) => jogo.id === id);
-
-  if (!jogo) {
-    return res.status(404).json({
-      message: "Jogo não encontrado"
-    });
+  if (nome !== undefined && (typeof nome !== "string" || !nome.trim() || nome.trim().length > 100)) {
+    return "nome deve ser um texto entre 1 e 100 caracteres";
   }
-
-  if (nome) {
-    jogo.nome = nome;
+  if (Ano !== undefined && (!Number.isInteger(Ano) || Ano < 1950 || Ano > new Date().getFullYear() + 10)) {
+    return "Ano deve ser um número inteiro válido";
   }
-
-  if (Ano) {
-    jogo.Ano = Ano;
+  if (!parcial && (nome === undefined || Ano === undefined)) {
+    return "Informe nome e Ano";
   }
+  return null;
+}
 
-  res.json(jogo);
-};
-
-export function apagarJogo (req, res) {
-  const id = Number(req.params.id);
-
-  const jogoIndex = jogos.findIndex((jogo) => jogo.id === id);
-
-  if (jogoIndex === -1) {
-    return res.status(404).json({
-      message: "Jogo não encontrado"
-    });
+function enviarErro(err, next) {
+  if (err.code === "P2025") {
+    return next({ status: 404, message: "Jogo não encontrado" });
   }
+  next(err);
+}
 
-  jogos.splice(jogoIndex, 1);
+export async function listarJogos(req, res, next) {
+  try {
+    res.json(await obterJogos());
+  } catch (err) {
+    next(err);
+  }
+}
 
-  res.json({
-    message: "Jogo removido com sucesso"
-  });
-};
+export async function buscarJogo(req, res, next) {
+  const id = validarId(req.params.id);
+  if (id === null) return res.status(400).json({ erro: "ID inválido" });
+
+  try {
+    const jogo = await buscarJogoPorId(id);
+    if (!jogo) return res.status(404).json({ message: "Jogo não encontrado" });
+    res.json(jogo);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function cadastrarJogo(req, res, next) {
+  const erro = validarJogo(req.body ?? {});
+  if (erro) return res.status(400).json({ erro });
+
+  try {
+    const jogo = await criarJogo({ nome: req.body.nome.trim(), Ano: req.body.Ano });
+    res.status(201).json({ mensagem: "Jogo cadastrado com sucesso", jogo });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function editarJogo(req, res, next) {
+  const id = validarId(req.params.id);
+  if (id === null) return res.status(400).json({ erro: "ID inválido" });
+  const dados = req.body ?? {};
+  const erro = validarJogo(dados, true);
+  if (erro) return res.status(400).json({ erro });
+
+  const atualizacao = {};
+  if (dados.nome !== undefined) atualizacao.nome = dados.nome.trim();
+  if (dados.Ano !== undefined) atualizacao.Ano = dados.Ano;
+
+  try {
+    res.json(await atualizarJogo(id, atualizacao));
+  } catch (err) {
+    enviarErro(err, next);
+  }
+}
+
+export async function apagarJogo(req, res, next) {
+  const id = validarId(req.params.id);
+  if (id === null) return res.status(400).json({ erro: "ID inválido" });
+
+  try {
+    await removerJogo(id);
+    res.json({ message: "Jogo removido com sucesso" });
+  } catch (err) {
+    enviarErro(err, next);
+  }
+}

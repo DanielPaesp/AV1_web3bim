@@ -1,5 +1,5 @@
 generator client {  
-  provider = "prisma-client-js"
+  provider = "prisma-client"
   output   = "../generated/prisma"
 }
 
@@ -9,9 +9,9 @@ datasource db {
 
 
 model Jogo {
-  id   Int  @id @default(autoincrement())
+  id   Int    @id @default(autoincrement())
   nome String @db.VarChar(100)
-  turma String @db.VarChar(20)
+  Ano  Int
 
   @@map("jogos")
 }

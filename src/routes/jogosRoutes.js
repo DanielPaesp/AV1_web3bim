@@ -1,6 +1,5 @@
 import express from "express";
-import autenticar from "../middlewares/autenticar.js";
-import { apagarJogo, buscarJogo, cadastrarJogo, editarJogo, listarJogos } from "../controller/jogosController";
+import { apagarJogo, buscarJogo, cadastrarJogo, editarJogo, listarJogos } from "../controller/jogosController.js";
 
 const router = express.Router();
 
@@ -29,7 +28,7 @@ const router = express.Router();
  *             example:
  *               erro: Acesso não autorizado. Token ausente ou inválido
  */
-router.get("/jogos", autenticar, listarJogos);
+router.get("/", listarJogos);
 
 /**
  * @swagger
@@ -67,7 +66,7 @@ router.get("/jogos", autenticar, listarJogos);
  *             example:
  *               message: Jogo não encontrado
  */
-router.get("/jogos/:id", autenticar, buscarJogo);
+router.get("/:id", buscarJogo);
 
 /**
  * @swagger
@@ -119,7 +118,7 @@ router.get("/jogos/:id", autenticar, buscarJogo);
  *             example:
  *               erro: Acesso não autorizado. Token ausente ou inválido
  */
-router.post("/jogos", autenticar, cadastrarJogo);
+router.post("/", cadastrarJogo);
 /**
  * @swagger
  * /jogos/{id}:
@@ -173,7 +172,7 @@ router.post("/jogos", autenticar, cadastrarJogo);
  *       404:
  *         description: Jogo não encontrado.
  */
-router.patch("/jogos/:id", autenticar, editarJogo);
+router.patch("/:id", editarJogo);
 
 /**
  * @swagger
@@ -207,7 +206,7 @@ router.patch("/jogos/:id", autenticar, editarJogo);
  *       404:
  *         description: Jogo não encontrado.
  */
-router.delete("/jogos/:id", autenticar, apagarJogo);
+router.delete("/:id", apagarJogo);
 
 
 export default router;
